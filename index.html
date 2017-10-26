@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="EmployeesApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>X-Formation Employeers</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://www.x-formation.com/wp-content/uploads/2014/07/favi.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+
+    <script src="todo.js"></script>
+    <script src="main.js"></script>
+    <script src="model.js"></script>
+    <script src="app.js"></script>
+    <link href="css/main.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <div ng-controller="EmployeesCtrl" class="well">
+
+        <!--******Registration******-->
+        <div class="row">
+            <div class="container panel col-sm-8 col-sm-offset-2" ng-show="registrationFormVisible">
+                <h2 class="panel-heading">Registration</h2>
+
+                <form class="form-horizontal" name="registrationForm" novalidate ng-submit="signInBtnClick(user, registrationForm.$valid)">
+                    <div class="form-group row">
+                        <label for="input1" class="col-sm-2 control-label">Login</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="userName" required id="input1" ng-model="user.login">
+                            <div class="error" ng-show="showError" ng-cloak>
+                                {{getError(registrationForm.userName.$error)}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="input2" class="col-sm-2 control-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" name="userPassword" required class="form-control" id="input2" ng-model="user.password">
+                            <div class="error" ng-show="showError" ng-cloak>
+                                {{getError(registrationForm.userPassword.$error)}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="error col-sm-offset-2 col-sm-10" ng-show="showMessage" ng-cloak>
+                            Login or password is incorrect
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--******Main form******-->
+
+        <div class="panel panel-primary" ng-show="mainFormVisible" ng-cloak>
+            <div class="panel-heading">
+                <div class="panel-title text-center">
+                    <h3>
+                        Number of employees:
+                        <span class="label label-info">{{persons.length}}</span>
+                    </h3>
+                </div>
+            </div>
+            <table class="table table-striped table-hover text-left">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Role</th>
+                        <th>Experience</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in persons" ng-click="showEditForm(item)">
+                        <td data-tooltip={{item.shortDescription}}>{{item.fName + ' ' + item.lName}}</td>
+                        <td>{{item.role}}</td>
+                        <td>{{item.experience}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--******Edit form******-->
+
+        <div class="row" ng-show="editFormVisible" ng-cloak>
+            <div id="editForm" class="container well col-sm-4 col-sm-offset-4">
+                <form name="editForm" novalidate ng-submit="">
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label>First name</label>
+                            <input name="fName" type="text" class="form-control" disabled ng-model="personInfo.fName" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Last name</label>
+                            <input name="lName" type="text" class="form-control" disabled ng-model="personInfo.lName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label>Position</label>
+                            <input name="position" type="text" class="form-control" disabled ng-model="personInfo.position" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Role</label>
+                            <input name="role" type="text" class="form-control" disabled ng-model="personInfo.role" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Experience</label>
+                        <input name="experience" type="text" class="form-control" value={{personInfo.experience}} />
+                    </div>
+                    <div class="form-group">
+                        <label>Short description</label>
+                        <input name="shortDescription" type="text" class="form-control" value={{personInfo.shortDescription}} />
+                    </div>
+                    <div class="form-group">
+                        <label>Long description</label>
+                        <textarea class="form-control" rows="4">{{personInfo.longDescription}}</textarea>
+                    </div>
+                    <div class="form-group row btnGroup">
+                        <div class="col-sm-6">
+                            <button class="btn btn-block btnEditForm" ng-click="confirmEdit()">Ok</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-block btnEditForm" ng-click="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <button class="btn btn-danger btn-block btnEditForm" ng-click="deleteEmployee(personInfo.id)">Delete employee</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--******Warning message******-->
+
+    <div class="row">
+        <div id="prompt-form-container" class="container well col-sm-2 col-sm-offset-5">
+            <div id="prompt-message"></div>
+            <button id="okBtn" class="btn btn-block">Ok</button>
+        </div>
+    </div>
+</body>
+</html>
