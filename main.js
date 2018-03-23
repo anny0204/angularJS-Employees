@@ -31,7 +31,7 @@ document.onmouseout = function () {
 
 function showTooltip(text, elem) {
     var tooltipElem = document.createElement('div');
-    tooltipElem.className = 'mytooltip';
+    tooltipElem.className = 'myTooltip';
     tooltipElem.innerHTML = text;
     document.body.appendChild(tooltipElem);
 
